@@ -8,6 +8,10 @@ import {
   type ReactNode,
 } from "react";
 
+import { pickForUser } from "@/engine/engine";
+import { MAX_DAY, season } from "@/engine/season";
+import type { Beat } from "@/engine/types";
+
 export type UserId = "user-A" | "user-B";
 export type Hour = 9 | 21;
 
@@ -31,7 +35,7 @@ export type DemoStateValue = DemoState & {
   setUser: (userId: UserId) => void;
   setHour: (hour: Hour) => void;
   setDay: (day: number) => void;
-  advanceDay: () => void;
+  advanceDay: () => Beat[];
   pushMessage: (message: Omit<DemoMessage, "id" | "at">) => void;
   dismissGuide: () => void;
   reset: () => void;
@@ -88,8 +92,15 @@ export function DemoStateProvider({ children }: { children: ReactNode }) {
     (day: number) => setState((s) => ({ ...s, day: Math.max(1, day) })),
     [],
   );
-  // Stub: advancing the day will later re-seed beats from the season.
-  const advanceDay = useCallback(() => setState((s) => ({ ...s, day: s.day + 1 })), []);
+  const advanceDay = useCallback(() => {
+    let picked: Beat[] = [];
+    setState((s) => {
+      const day = Math.min(MAX_DAY, s.day + 1);
+      picked = pickForUser(season.days[day] ?? [], s.userId, day);
+      return { ...s, day };
+    });
+    return picked;
+  }, []);
   const pushMessage = useCallback((message: Omit<DemoMessage, "id" | "at">) => {
     setState((s) => ({
       ...s,

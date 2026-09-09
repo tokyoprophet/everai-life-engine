@@ -2,6 +2,7 @@ import { Clock, Play, RotateCcw } from "lucide-react";
 import type { ReactNode } from "react";
 
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { MAX_DAY } from "@/engine/season";
 import { useDemoState, type Hour, type UserId } from "@/lib/demo-state";
 import { cn } from "@/lib/utils";
 
@@ -27,6 +28,7 @@ export function DemoDock() {
 
   const users: UserId[] = ["user-A", "user-B"];
   const hours: Hour[] = [9, 21];
+  const atSeasonEnd = hydrated && day >= MAX_DAY;
 
   return (
     <div className="pointer-events-none fixed inset-x-0 bottom-0 z-50 flex justify-center px-3 pb-4">
@@ -91,11 +93,18 @@ export function DemoDock() {
           </div>
         </Hint>
 
-        <Hint label="Simulates the daily cron for Mia. In production it runs at 00:00 Europe/Lisbon.">
+        <Hint
+          label={
+            atSeasonEnd
+              ? "Season demo ends at day 6"
+              : "Simulates the daily cron for Mia. In production it runs at 00:00 Europe/Lisbon."
+          }
+        >
           <button
             type="button"
-            onClick={advanceDay}
-            className="inline-flex items-center gap-1.5 whitespace-nowrap rounded-full bg-accent px-4 py-2 text-xs font-semibold text-white accent-ring transition-transform hover:-translate-y-px focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet focus-visible:ring-offset-2 focus-visible:ring-offset-bg"
+            onClick={() => advanceDay()}
+            disabled={atSeasonEnd}
+            className="inline-flex items-center gap-1.5 whitespace-nowrap rounded-full bg-accent px-4 py-2 text-xs font-semibold text-white accent-ring transition-transform hover:-translate-y-px focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet focus-visible:ring-offset-2 focus-visible:ring-offset-bg disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:translate-y-0"
           >
             <Play className="h-3.5 w-3.5" aria-hidden="true" />
             Advance day
