@@ -30,6 +30,7 @@ export type DemoState = {
   messages: DemoMessage[];
   threads: Record<string, string>;
   guideDismissed: boolean;
+  dayRead: boolean;
 };
 
 export type DemoStateValue = DemoState & {

@@ -151,6 +151,19 @@
   animation: highlight-fade 1.2s ease-out both;
 }
 
+@keyframes page-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@utility page-fade {
+  animation: page-fade 0.15s ease-out both;
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
