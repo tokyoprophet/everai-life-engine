@@ -10,6 +10,8 @@ import {
 } from "lucide-react";
 import type { ReactNode } from "react";
 
+import { LIVE_ENGINE_URL } from "@/config";
+
 import { Reveal } from "@/components/reveal";
 import {
   estimateMonthlyCost,
@@ -383,19 +385,24 @@ function IdeaPage() {
       {/* 6. About this prototype */}
       <Section id="about" title="About this prototype">
         <Reveal>
-          <div className="grid gap-4 rounded-[20px] border border-line bg-surface p-6 text-sm leading-relaxed text-text-3 sm:grid-cols-2">
+          <div className="flex flex-col gap-4 rounded-[20px] border border-line bg-surface p-6 text-sm leading-relaxed text-text-3">
             <div className="flex gap-3">
               <Brain className="mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" />
               <p>
-                What is real: the engine logic, the payload contract, the storyline content.
+                What is real: the engine logic (hash pick, release schedule, payload contract,
+                injection block), the storyline content, and a live service (Next.js + Claude) at{" "}
+                {LIVE_ENGINE_URL || "the deployed URL"} that writes a day on request.
               </p>
             </div>
             <p>
-              What is a placeholder: media, and the chat model is scripted unless connected.
+              What is a stand-in: the chat model. It is scripted here so the demo is
+              deterministic; in Candy it is your model with our block in its prompt.
             </p>
-            <p className="sm:col-span-2">
-              Framing and prioritisation with Claude, build with Lovable, storyline content edited by
-              hand.
+            <p>What the user said lives in the chat thread, not in the engine.</p>
+            <p>
+              How AI was used: Claude for framing, option mapping and prompts; Lovable for this
+              demo; the live service built with Claude Code; storyline content and engine rules
+              written and edited by hand. Full note in the repo README.
             </p>
           </div>
         </Reveal>

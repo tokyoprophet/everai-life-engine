@@ -87,7 +87,13 @@ function SessionPanel({ onNewSession }: { onNewSession: () => void }) {
 }
 
 
-function BehindPanel({ selectedBeatId }: { selectedBeatId: string | null }) {
+function BehindPanel({
+  selectedBeatId,
+  quotesUser,
+}: {
+  selectedBeatId: string | null;
+  quotesUser: boolean;
+}) {
   const { userId, hour } = useDemoState();
   const { day, injection, arcsState } = useToday();
   const beat = findBeat(selectedBeatId);
@@ -96,6 +102,16 @@ function BehindPanel({ selectedBeatId }: { selectedBeatId: string | null }) {
   return (
     <section className="rounded-[20px] border border-line bg-surface p-5">
       <h2 className="text-sm font-medium text-text">Behind this message</h2>
+
+      {quotesUser ? (
+        <div className="mt-4 rounded-[12px] border border-line bg-surface-2 p-3">
+          <p className="text-[11px] uppercase tracking-widest text-text-3">Source</p>
+          <p className="mt-1.5 text-xs leading-relaxed text-text-2">
+            This conversation's history (Candy's thread), not the Life Engine. The engine stores
+            nothing about the user.
+          </p>
+        </div>
+      ) : null}
 
       {beat ? (
         <div className="mt-4">
@@ -155,11 +171,14 @@ function BehindPanel({ selectedBeatId }: { selectedBeatId: string | null }) {
 }
 
 function ChatPage() {
-  const [selectedBeatId, setSelectedBeatId] = useState<string | null>(null);
+  const [selected, setSelected] = useState<{ beatId: string | null; quotesUser: boolean }>({
+    beatId: null,
+    quotesUser: false,
+  });
   const [sessionSignal, setSessionSignal] = useState(0);
 
   return (
-    <div className="mx-auto max-w-[1280px] px-4 py-16 pb-[150px] sm:px-6 sm:pb-[100px]">
+    <div className="mx-auto max-w-[1280px] px-4 py-16 pb-[210px] sm:px-6 sm:pb-[124px]">
       <PageHeader
         eyebrow="The chat"
         title="She answers from her day, not from nothing"
@@ -171,10 +190,17 @@ function ChatPage() {
           <SessionPanel onNewSession={() => setSessionSignal((n) => n + 1)} />
         </div>
         <div className="order-1 lg:order-2 lg:col-span-6">
-          <PhoneChat onSelectBeat={setSelectedBeatId} sessionSignal={sessionSignal} />
+          <PhoneChat
+            onSelectBeat={(beatId, quotesUser) => setSelected({ beatId, quotesUser })}
+            sessionSignal={sessionSignal}
+          />
+          <p className="mx-auto mt-4 max-w-[390px] text-xs leading-relaxed text-text-3">
+            What she remembers you said lives in the chat thread, exactly where it lives in Candy
+            today. v2 adds one line per storyline on the service side.
+          </p>
         </div>
         <div className="order-3 lg:col-span-3">
-          <BehindPanel selectedBeatId={selectedBeatId} />
+          <BehindPanel selectedBeatId={selected.beatId} quotesUser={selected.quotesUser} />
         </div>
       </div>
 

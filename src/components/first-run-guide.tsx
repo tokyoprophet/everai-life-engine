@@ -5,7 +5,7 @@ import { useDemoState } from "@/lib/demo-state";
 import { cn } from "@/lib/utils";
 
 export function FirstRunGuide() {
-  const { guideDismissed, dismissGuide, dayRead, markDayRead, threads, day, userId, hydrated } =
+  const { guideDismissed, dismissGuide, dayRead, markDayRead, stances, day, userId, hydrated } =
     useDemoState();
 
   useEffect(() => {
@@ -18,7 +18,7 @@ export function FirstRunGuide() {
 
   const steps = [
     { label: "Read her day", done: dayRead },
-    { label: "Tell her what to do about Duarte (in the chat)", done: Boolean(threads["duarte"]) },
+    { label: "Tell her what to do about Duarte (in the chat)", done: Boolean(stances["duarte"]) },
     { label: "Advance the day and switch user", done: day > 1 && userId === "user-B" },
   ];
 

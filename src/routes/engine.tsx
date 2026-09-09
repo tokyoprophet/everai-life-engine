@@ -15,6 +15,7 @@ import {
 
 import { DemoDock } from "@/components/demo-dock";
 import { JsonView } from "@/components/json-view";
+import { LiveBadge } from "@/components/live-badge";
 import { PageHeader } from "@/components/page-header";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Slider } from "@/components/ui/slider";
@@ -375,7 +376,7 @@ function EnginePage() {
   const endpoint = `GET /api/v1/characters/mia/day?user_id=${userId}&day=${day}&hour=${hour}`;
 
   return (
-    <div className="mx-auto max-w-[1280px] px-4 py-16 pb-[150px] sm:px-6 sm:pb-[100px]">
+    <div className="mx-auto max-w-[1280px] px-4 py-16 pb-[210px] sm:px-6 sm:pb-[124px]">
       <PageHeader
         eyebrow="Control room"
         title="One job per character per day."
@@ -389,6 +390,7 @@ function EnginePage() {
           <span className="rounded-full border border-line bg-surface-2 px-3 py-1.5 text-sm tabular-nums text-text">
             Day {day}
           </span>
+          <LiveBadge showScripted />
           <div className="flex rounded-full border border-line bg-surface-2 p-1" role="group" aria-label="User">
             {(["user-A", "user-B"] as const).map((u) => (
               <button
