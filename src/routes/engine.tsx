@@ -87,28 +87,28 @@ function Pipeline({
       title: "Season",
       line: "Seeded once from her card",
       value: `${season.arcs.length} storylines · 4 weeks`,
-      tab: "candidates" as TabKey,
+      tab: "payload" as TabKey,
     },
     {
       icon: CalendarClock,
       title: "Daily job",
       line: "00:00 Europe/Lisbon",
       value: `day ${day} written`,
-      tab: "candidates" as TabKey,
+      tab: "payload" as TabKey,
     },
     {
       icon: ListChecks,
       title: "4 candidate beats",
       line: "Written once per character",
       value: `day ${day} · 4 beats`,
-      tab: "candidates" as TabKey,
+      tab: "payload" as TabKey,
     },
     {
       icon: Shuffle,
       title: "Pick 2 per user",
       line: "Hash of user id, day and slot",
       value: `${userId} → m:v${mv}, e:v${ev}`,
-      tab: "candidates" as TabKey,
+      tab: "payload" as TabKey,
     },
     {
       icon: Clock,
@@ -338,7 +338,7 @@ function CostTab() {
 function EnginePage() {
   const { userId, hour, day, setUser, setHour, advanceDay, reset } = useDemoState();
   const { payload, injection, beats: picked } = useToday();
-  const [tab, setTab] = useState<TabKey>("candidates");
+  const [tab, setTab] = useState<TabKey>("payload");
   const [writing, setWriting] = useState(false);
   const [status, setStatus] = useState<string | null>(null);
   const [highlight, setHighlight] = useState(false);
@@ -459,7 +459,6 @@ function EnginePage() {
       <div ref={panelsRef} className="mt-8 scroll-mt-24">
         <Tabs value={tab} onValueChange={(v) => setTab(v as TabKey)}>
           <TabsList className="bg-surface-2">
-            <TabsTrigger value="candidates">Candidates</TabsTrigger>
             <TabsTrigger value="payload">Payload</TabsTrigger>
             <TabsTrigger value="prompt">System prompt</TabsTrigger>
             <TabsTrigger value="cost">Cost</TabsTrigger>
@@ -468,19 +467,6 @@ function EnginePage() {
           <div
             className={`mt-4 rounded-[20px] border border-line bg-surface p-5 ${highlight ? "highlight-fade" : ""}`}
           >
-            <TabsContent value="candidates" className="mt-0">
-              <div className="grid gap-3 sm:grid-cols-2">
-                {candidates.map((beat) => (
-                  <CandidateCard
-                    key={beat.id}
-                    beat={beat}
-                    picked={pickedIds.has(beat.id)}
-                    userId={userId}
-                  />
-                ))}
-              </div>
-            </TabsContent>
-
             <TabsContent value="payload" className="mt-0">
               <div className="flex flex-wrap items-center gap-3">
                 <code className="min-w-0 flex-1 truncate font-mono text-xs text-text-2">
