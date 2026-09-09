@@ -5,9 +5,12 @@ import { Clock, PlayCircle, User } from "lucide-react";
 import { PhoneChat } from "@/components/chat/phone-chat";
 import { DemoDock } from "@/components/demo-dock";
 import { PageHeader } from "@/components/page-header";
-import { findBeat, releasedBeats } from "@/chat/scriptedChat";
+import { findBeat, hasOpenedToday, releasedBeats } from "@/chat/scriptedChat";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { arcTitle } from "@/engine/season";
 import { useToday } from "@/engine/use-today";
 import { useDemoState } from "@/lib/demo-state";
+
 
 export const Route = createFileRoute("/chat")({
   head: () => ({
@@ -29,12 +32,24 @@ export const Route = createFileRoute("/chat")({
 });
 
 function SessionPanel({ onNewSession }: { onNewSession: () => void }) {
-  const { userId, day, hour } = useDemoState();
+  const { userId, day, hour, messages } = useDemoState();
+  const alreadyOpened = hasOpenedToday(messages, day);
   const rows = [
     { icon: User, label: "User", value: userId },
     { icon: PlayCircle, label: "Day", value: `Day ${day}` },
     { icon: Clock, label: "Her time", value: `${String(hour).padStart(2, "0")}:00` },
   ];
+
+  const button = (
+    <button
+      type="button"
+      onClick={onNewSession}
+      disabled={alreadyOpened}
+      className="mt-5 w-full rounded-full bg-accent px-4 py-2.5 text-sm font-medium text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose/40 disabled:cursor-not-allowed disabled:opacity-50"
+    >
+      Open a new session
+    </button>
+  );
 
   return (
     <section className="rounded-[20px] border border-line bg-surface p-5">
@@ -48,13 +63,21 @@ function SessionPanel({ onNewSession }: { onNewSession: () => void }) {
           </div>
         ))}
       </dl>
-      <button
-        type="button"
-        onClick={onNewSession}
-        className="mt-5 w-full rounded-full bg-accent px-4 py-2.5 text-sm font-medium text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose/40"
-      >
-        Open a new session
-      </button>
+      {alreadyOpened ? (
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <span className="block">{button}</span>
+          </TooltipTrigger>
+          <TooltipContent
+            side="top"
+            className="max-w-[240px] border border-line bg-surface-3 text-xs text-text-2"
+          >
+            She already opened today. Advance the day to get a new one.
+          </TooltipContent>
+        </Tooltip>
+      ) : (
+        button
+      )}
       <p className="mt-3 text-xs leading-relaxed text-text-3">
         In production this happens when the user opens the chat. Candy fetches her day and
         pastes it into the prompt.
@@ -62,6 +85,7 @@ function SessionPanel({ onNewSession }: { onNewSession: () => void }) {
     </section>
   );
 }
+
 
 function BehindPanel({ selectedBeatId }: { selectedBeatId: string | null }) {
   const { userId, hour } = useDemoState();
@@ -79,9 +103,10 @@ function BehindPanel({ selectedBeatId }: { selectedBeatId: string | null }) {
             <span className="text-xs text-text-3">{beat.slot}</span>
             {beat.arcId ? (
               <span className="rounded-full border border-violet/30 bg-violet/12 px-2.5 py-0.5 text-[11px] text-violet">
-                {beat.arcId}
+                {arcTitle(beat.arcId)}
               </span>
             ) : null}
+
           </div>
           <p className="mt-3 text-sm leading-relaxed text-text-2">{beat.text}</p>
         </div>
@@ -134,7 +159,7 @@ function ChatPage() {
   const [sessionSignal, setSessionSignal] = useState(0);
 
   return (
-    <div className="mx-auto max-w-[1280px] px-4 py-16 pb-32 sm:px-6">
+    <div className="mx-auto max-w-[1280px] px-4 py-16 pb-[150px] sm:px-6 sm:pb-[100px]">
       <PageHeader
         eyebrow="The chat"
         title="She answers from her day, not from nothing"

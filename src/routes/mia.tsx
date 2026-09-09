@@ -217,7 +217,7 @@ function MiaPage() {
   const days = Array.from({ length: day + 1 }, (_, i) => day - i);
 
   return (
-    <div className="mx-auto max-w-[1280px] px-4 py-16 pb-32 sm:px-6">
+    <div className="mx-auto max-w-[1280px] px-4 py-16 pb-[150px] sm:px-6 sm:pb-[100px]">
       <PageHeader
         eyebrow="Her life"
         title="Mia's season, day by day"

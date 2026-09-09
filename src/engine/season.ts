@@ -576,3 +576,9 @@ export const season: Season = {
     6: day6,
   },
 };
+
+/** Human readable storyline title for an arc id, for user facing pills. */
+export function arcTitle(arcId: string | null | undefined): string | null {
+  if (!arcId) return null;
+  return arcs.find((a) => a.id === arcId)?.title ?? arcId;
+}

@@ -7,8 +7,10 @@ import {
   day0EveningBeatId,
   findBeat,
   opener,
+  reOpener,
   reply,
 } from "@/chat/scriptedChat";
+
 import { useDemoState, type DemoMessage } from "@/lib/demo-state";
 
 const QUICK_REPLIES = [
@@ -113,7 +115,7 @@ export function PhoneChat({
     if (!clean) return;
     setDraft("");
     pushMessage({ role: "user", text: clean, sourceBeatId: null });
-    const answer = reply(clean, day, userId, hour);
+    const answer = reply(clean, day, userId, hour, messages.length);
     if (answer.arcId) setThread(answer.arcId, clean);
     speak(answer.messages);
   }
@@ -123,11 +125,20 @@ export function PhoneChat({
   useEffect(() => {
     if (!hydrated) return;
     if (sessionSignal === lastSession.current && day === lastDay.current) return;
+    const manual = sessionSignal !== lastSession.current && day === lastDay.current;
     lastSession.current = sessionSignal;
     lastDay.current = day;
-    speak(opener(day, userId, hour, threads));
+    if (manual) {
+      const used = messages
+        .map((m) => m.sourceBeatId)
+        .filter((id): id is string => Boolean(id));
+      speak(reOpener(day, userId, hour, used));
+    } else {
+      speak(opener(day, userId, hour, threads));
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sessionSignal, day, hydrated]);
+
 
   let renderedDay = -1;
 
@@ -151,7 +162,7 @@ export function PhoneChat({
             </span>
           </header>
 
-          <div ref={listRef} className="flex-1 overflow-y-auto px-4 py-4">
+          <div ref={listRef} className="no-scrollbar flex-1 overflow-y-auto px-4 py-4">
             {messages.map((message, i) => {
               const beat = findBeat(message.sourceBeatId);
               const beatDay = beat?.day ?? renderedDay;
@@ -181,7 +192,7 @@ export function PhoneChat({
           </div>
 
           <div className="border-t border-line px-3 pb-3 pt-3">
-            <div className="flex gap-2 overflow-x-auto pb-2">
+            <div className="no-scrollbar flex gap-2 overflow-x-auto pb-2">
               {QUICK_REPLIES.map((chip) => (
                 <button
                   key={chip}

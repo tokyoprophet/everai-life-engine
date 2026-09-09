@@ -80,12 +80,42 @@ export function opener(
   return messages;
 }
 
+/** Short paraphrases in her voice, three per storyline, never the beat text verbatim. */
+const ARC_TEMPLATES: Record<string, string[]> = {
+  duarte: [
+    "ok. you're right. i've been at tati all morning rewriting it. it says 'late fee' now. still in drafts.",
+    "yeah. the duarte thing has been sitting on my chest all day. i open the email, i close the email.",
+    "fine. i'll stop being nice about it. rent is rent and he knows exactly what he's doing.",
+  ],
+  ana: [
+    "ana. yeah. we keep almost talking about berlin and then talking about dinner instead.",
+    "i want to be happy for her and mostly i am. the other bit is just mine to carry, i think.",
+    "i keep doing maths on the flat in my head instead of saying the actual thing out loud.",
+  ],
+  film: [
+    "i shot a roll today. mostly the balcony, mostly her. it's turning into something.",
+    "the shoebox of frames is starting to look like an actual zine, which is terrifying.",
+    "i lost the evening in the darkroom and forgot to eat. worth it, i think.",
+  ],
+  default: [
+    "ok. noted. today was small things and one thing i keep circling back to.",
+    "mm. fair. it's been a long one honestly.",
+    "yeah. i'm still chewing on it.",
+  ],
+};
+
+function paraphrase(arcId: string | null, seed: number): string {
+  const set = ARC_TEMPLATES[arcId ?? "default"] ?? ARC_TEMPLATES["default"]!;
+  return set[seed % set.length]!;
+}
+
 /** Her answer to something the user typed. */
 export function reply(
   userText: string,
   day: number,
   userId: string,
   hour: number,
+  messageCount = 0,
 ): { messages: ScriptedMessage[]; arcId: string | null } {
   const arcId = classifyArc(userText);
   const beats = releasedBeats(day, userId, hour);
@@ -93,7 +123,7 @@ export function reply(
 
   if (arcId && beat) {
     const messages: ScriptedMessage[] = [
-      { text: `ok. you're right. ${beat.text}`, sourceBeatId: beat.id },
+      { text: paraphrase(arcId, hash32(`${beat.id}:${messageCount}`)), sourceBeatId: beat.id },
     ];
     if (beat.openQuestion) {
       messages.push({ text: `${beat.openQuestion}?`, sourceBeatId: beat.id });
@@ -104,6 +134,49 @@ export function reply(
   const line = GENERIC_LINES[hash32(userText) % GENERIC_LINES.length]!;
   return { messages: [{ text: line, sourceBeatId: null }], arcId: null };
 }
+
+/** True when she has already opened the conversation for this day. */
+export function hasOpenedToday(
+  messages: { role: string; sourceBeatId: string | null }[],
+  day: number,
+): boolean {
+  return messages.some(
+    (m) => m.role === "mia" && findBeat(m.sourceBeatId)?.day === day,
+  );
+}
+
+/**
+ * A second opener for the same day: the other released beat if there is one,
+ * otherwise a short re-entry line plus her open question.
+ */
+export function reOpener(
+  day: number,
+  userId: string,
+  hour: number,
+  usedBeatIds: string[],
+): ScriptedMessage[] {
+  const used = new Set(usedBeatIds);
+  const beats = releasedBeats(day, userId, hour);
+  const fresh = beats.find((b) => !used.has(b.id));
+  const beat = fresh ?? beats[beats.length - 1] ?? null;
+  if (!beat) {
+    return [{ text: "back already? nothing new since we spoke, honestly.", sourceBeatId: null }];
+  }
+
+  const messages: ScriptedMessage[] = fresh
+    ? [{ text: fresh.text, sourceBeatId: fresh.id }]
+    : [
+        {
+          text: "back already? ok good, i needed to vent about this.",
+          sourceBeatId: beat.id,
+        },
+      ];
+  if (beat.openQuestion) {
+    messages.push({ text: `${beat.openQuestion}?`, sourceBeatId: beat.id });
+  }
+  return messages;
+}
+
 
 export function findBeat(beatId: string | null | undefined): Beat | null {
   if (!beatId) return null;

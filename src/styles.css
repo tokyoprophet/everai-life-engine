@@ -186,3 +186,13 @@
     transition-duration: 0.001ms !important;
   }
 }
+
+/* Scrollable areas inside the phone: keep the scrolling, drop the bar */
+@utility no-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}

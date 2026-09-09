@@ -230,13 +230,15 @@ const DECISIONS: { claim: string; reason: string }[] = [
 ];
 
 const MILESTONES: { when: string; what: string }[] = [
-  { when: "Week 1", what: "Diagnostics and seed arcs." },
-  { when: "Week 2", what: "Service up in shadow, cancel-flow pause offer live." },
-  { when: "Weeks 3 to 5", what: "Integration behind a flag, and evals." },
-  { when: "Week 6", what: "A/B on 100% of new subscribers, randomised by user." },
-  { when: "Weeks 7 to 10", what: "Iterate, extend to user-created characters." },
-  { when: "Weeks 11 to 13", what: "First full month-1 read, ramp if it holds." },
+  { when: "Day 1", what: "Diagnostics and seed arcs." },
+  { when: "Day 2", what: "Service in shadow, cancel-flow pause offer live." },
+  { when: "Day 3", what: "Integration behind a flag, evals." },
+  { when: "Day 4", what: "A/B on 10% of new subscribers, randomised by user." },
+  { when: "Days 5 to 7", what: "First 48-hour return read." },
+  { when: "Day 14", what: "D7 read, ramp to 100% or iterate." },
+  { when: "Day 34", what: "First full month-1 read." },
 ];
+
 
 const FAQ: { q: string; a: string }[] = [
   {
@@ -339,7 +341,12 @@ function IntegrationPage() {
             ))}
           </div>
         </div>
+        <p className="mt-4 text-sm leading-relaxed text-text-2">
+          With 52 million users the sample is never the wait. Only the calendar month behind
+          the metric is.
+        </p>
       </Section>
+
 
       <Section title="Measurement">
         <div className="rounded-[20px] border border-line bg-surface p-5">
@@ -376,7 +383,8 @@ function IntegrationPage() {
           ))}
           <p className="mt-4 text-sm leading-relaxed text-text-2">
             Baseline renewal 50%, detect 5 points at alpha 0.05 and power 0.8: about 1,600
-            subscribers per arm. The wait is the month, not the sample.
+            subscribers per arm. Candy reaches that in a day; the wait is the calendar month
+            behind the metric, not the sample.
           </p>
         </div>
       </Section>
