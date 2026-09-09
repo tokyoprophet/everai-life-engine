@@ -151,6 +151,33 @@
   animation: highlight-fade 1.2s ease-out both;
 }
 
+/* Cards and bordered surfaces brighten slightly on hover */
+[class~="border-line"] {
+  transition: border-color 0.2s ease;
+}
+
+[class~="border-line"]:hover {
+  border-color: rgba(255, 255, 255, 0.14);
+}
+
+:focus-visible {
+  outline: 2px solid var(--violet);
+  outline-offset: 2px;
+}
+
+@keyframes page-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@utility page-fade {
+  animation: page-fade 0.15s ease-out both;
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

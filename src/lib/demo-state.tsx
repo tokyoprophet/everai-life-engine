@@ -30,6 +30,7 @@ export type DemoState = {
   messages: DemoMessage[];
   threads: Record<string, string>;
   guideDismissed: boolean;
+  dayRead: boolean;
 };
 
 export type DemoStateValue = DemoState & {
@@ -41,6 +42,7 @@ export type DemoStateValue = DemoState & {
   pushMessage: (message: Omit<DemoMessage, "id" | "at">) => void;
   setThread: (arcId: string, userText: string) => void;
   dismissGuide: () => void;
+  markDayRead: () => void;
   reset: () => void;
 };
 
@@ -53,6 +55,7 @@ const initialState: DemoState = {
   messages: [],
   threads: {},
   guideDismissed: false,
+  dayRead: false,
 };
 
 const DemoStateContext = createContext<DemoStateValue | null>(null);
@@ -123,6 +126,10 @@ export function DemoStateProvider({ children }: { children: ReactNode }) {
     () => setState((s) => ({ ...s, guideDismissed: true })),
     [],
   );
+  const markDayRead = useCallback(
+    () => setState((s) => (s.dayRead ? s : { ...s, dayRead: true })),
+    [],
+  );
   const reset = useCallback(() => setState(initialState), []);
 
   const value = useMemo<DemoStateValue>(
@@ -136,9 +143,22 @@ export function DemoStateProvider({ children }: { children: ReactNode }) {
       pushMessage,
       setThread,
       dismissGuide,
+      markDayRead,
       reset,
     }),
-    [state, hydrated, setUser, setHour, setDay, advanceDay, pushMessage, setThread, dismissGuide, reset],
+    [
+      state,
+      hydrated,
+      setUser,
+      setHour,
+      setDay,
+      advanceDay,
+      pushMessage,
+      setThread,
+      dismissGuide,
+      markDayRead,
+      reset,
+    ],
   );
 
   return <DemoStateContext.Provider value={value}>{children}</DemoStateContext.Provider>;

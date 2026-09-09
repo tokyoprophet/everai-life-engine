@@ -4,6 +4,7 @@ import {
   Link,
   createRootRouteWithContext,
   useRouter,
+  useRouterState,
   HeadContent,
   Scripts,
 } from "@tanstack/react-router";
@@ -13,26 +14,24 @@ import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { DemoStateProvider } from "../lib/demo-state";
 import { TooltipProvider } from "../components/ui/tooltip";
+import { Toaster } from "../components/ui/sonner";
 import { SiteFooter, SiteNav } from "../components/site-nav";
 
 function NotFoundComponent() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background px-4">
-      <div className="max-w-md text-center">
-        <h1 className="text-7xl font-bold text-foreground">404</h1>
-        <h2 className="mt-4 text-xl font-semibold text-foreground">Page not found</h2>
-        <p className="mt-2 text-sm text-muted-foreground">
-          The page you're looking for doesn't exist or has been moved.
-        </p>
-        <div className="mt-6">
-          <Link
-            to="/"
-            className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
-          >
-            Go home
-          </Link>
-        </div>
-      </div>
+    <div className="mx-auto flex min-h-[60vh] max-w-[720px] flex-col items-center justify-center px-5 text-center">
+      <p className="text-xs uppercase tracking-[0.18em] text-text-3">404</p>
+      <h1 className="mt-3 font-display text-3xl text-text">This page is not part of the demo.</h1>
+      <p className="mt-3 text-sm text-text-2">
+        You are looking at a page that does not exist. The demo lives on five pages, starting with
+        the idea.
+      </p>
+      <Link
+        to="/"
+        className="mt-6 inline-flex items-center rounded-full bg-accent px-5 py-2.5 text-sm font-semibold text-white accent-ring focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet focus-visible:ring-offset-2 focus-visible:ring-offset-bg"
+      >
+        Back to the idea
+      </Link>
     </div>
   );
 }
@@ -121,6 +120,7 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
 
   return (
     <QueryClientProvider client={queryClient}>
@@ -128,12 +128,22 @@ function RootComponent() {
         <TooltipProvider delayDuration={150}>
           <div className="flex min-h-screen flex-col">
             <SiteNav />
-            <main className="flex-1">
+            <main key={pathname} className="page-fade flex-1">
               {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
               <Outlet />
             </main>
             <SiteFooter />
           </div>
+          <Toaster
+            position="top-right"
+            theme="dark"
+            toastOptions={{
+              classNames: {
+                toast:
+                  "group toast border border-line bg-surface-2 text-text text-sm rounded-2xl",
+              },
+            }}
+          />
         </TooltipProvider>
       </DemoStateProvider>
     </QueryClientProvider>
