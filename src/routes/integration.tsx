@@ -1,7 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 
 import { PageHeader } from "@/components/page-header";
-import { Reveal } from "@/components/reveal";
 import {
   Accordion,
   AccordionContent,
@@ -76,8 +75,11 @@ function SequenceDiagram() {
           const right = Math.max(step.from, step.to);
           const forward = step.to > step.from;
           return (
-            <Reveal key={i} delay={i * 0.12}>
-              <div className="grid grid-cols-4 items-center gap-2">
+            <div
+              key={i}
+              className="rise-in grid grid-cols-4 items-center gap-2"
+              style={{ animationDelay: `${i * 120}ms` }}
+            >
                 <div className="col-span-4">
                   <svg
                     viewBox="0 0 400 34"
@@ -120,8 +122,7 @@ function SequenceDiagram() {
                   </span>
                   {step.label}
                 </p>
-              </div>
-            </Reveal>
+            </div>
           );
         })}
       </div>
@@ -306,12 +307,14 @@ function IntegrationPage() {
       <Section title="Design decisions">
         <div className="grid gap-4 md:grid-cols-2">
           {DECISIONS.map((d, i) => (
-            <Reveal key={d.claim} delay={i * 0.04}>
-              <div className="rounded-[16px] border border-line bg-surface p-4">
+            <div
+              key={d.claim}
+              className="rise-in rounded-[16px] border border-line bg-surface p-4"
+              style={{ animationDelay: `${i * 40}ms` }}
+            >
                 <p className="text-sm font-semibold text-text">{d.claim}</p>
-                <p className="mt-1 text-sm leading-relaxed text-text-2">{d.reason}</p>
-              </div>
-            </Reveal>
+              <p className="mt-1 text-sm leading-relaxed text-text-2">{d.reason}</p>
+            </div>
           ))}
         </div>
       </Section>
