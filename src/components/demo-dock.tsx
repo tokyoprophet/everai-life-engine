@@ -61,8 +61,8 @@ export function DemoDock() {
   const modes: EngineMode[] = ["scripted", "live"];
   const atSeasonEnd = hydrated && day >= MAX_DAY;
 
-  function onAdvance() {
-    if (engineMode === "live") void liveTick("mia");
+  async function onAdvance() {
+    if (engineMode === "live") await liveTick("mia");
     advanceDay();
     const next = Math.min(MAX_DAY, day + 1);
     toast(`Day ${next} written once for every user`);
