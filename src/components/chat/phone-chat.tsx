@@ -113,7 +113,7 @@ export function PhoneChat({
     if (!clean) return;
     setDraft("");
     pushMessage({ role: "user", text: clean, sourceBeatId: null });
-    const answer = reply(clean, day, userId, hour);
+    const answer = reply(clean, day, userId, hour, messages.length);
     if (answer.arcId) setThread(answer.arcId, clean);
     speak(answer.messages);
   }
@@ -123,11 +123,20 @@ export function PhoneChat({
   useEffect(() => {
     if (!hydrated) return;
     if (sessionSignal === lastSession.current && day === lastDay.current) return;
+    const manual = sessionSignal !== lastSession.current && day === lastDay.current;
     lastSession.current = sessionSignal;
     lastDay.current = day;
-    speak(opener(day, userId, hour, threads));
+    if (manual) {
+      const used = messages
+        .map((m) => m.sourceBeatId)
+        .filter((id): id is string => Boolean(id));
+      speak(reOpener(day, userId, hour, used));
+    } else {
+      speak(opener(day, userId, hour, threads));
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sessionSignal, day, hydrated]);
+
 
   let renderedDay = -1;
 
