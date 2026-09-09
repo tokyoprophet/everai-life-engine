@@ -1,5 +1,4 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { motion } from "framer-motion";
 import { Clock, Layers, Shuffle, Sunrise } from "lucide-react";
 
 import { BeatCard, LockedBeatCard } from "@/components/beat-card";
@@ -105,11 +104,9 @@ function DayBlock({ dayNumber, today }: { dayNumber: number; today: number }) {
   const bySlot = (slot: Slot) => beats.find((b) => b.slot === slot);
 
   return (
-    <motion.div
-      initial={isToday ? { opacity: 0, y: 8 } : false}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.3, ease: "easeOut" }}
-      className="relative"
+    <div
+      key={dayNumber}
+      className={`relative rounded-[20px] ${isToday ? "rise-in highlight-fade" : ""}`}
     >
       <div className="flex flex-wrap items-center gap-x-3 gap-y-2 border-b border-line pb-3">
         <span className="font-display text-lg text-text">Day {dayNumber}</span>
@@ -134,7 +131,7 @@ function DayBlock({ dayNumber, today }: { dayNumber: number; today: number }) {
           return <BeatCard key={beat.id} beat={beat} userId={userId} index={index} />;
         })}
       </div>
-    </motion.div>
+    </div>
   );
 }
 

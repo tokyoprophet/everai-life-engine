@@ -109,15 +109,12 @@ export function BeatCard({
   userId: string;
   index: number;
 }) {
-  const reduced = useReducedMotion();
   const Icon = slotIcon[beat.slot];
 
   return (
-    <motion.article
-      initial={reduced ? false : { opacity: 0, y: 8 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.3, ease: "easeOut", delay: index * 0.06 }}
-      className="rounded-[20px] border border-line bg-surface p-5 shadow-[var(--shadow-soft)]"
+    <article
+      style={{ animationDelay: `${index * 60}ms` }}
+      className="rise-in rounded-[20px] border border-line bg-surface p-5 shadow-[var(--shadow-soft)]"
     >
       <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
         <Icon className="h-4 w-4 text-text-3" aria-hidden="true" />
@@ -156,6 +153,6 @@ export function BeatCard({
           </TooltipContent>
         </Tooltip>
       </div>
-    </motion.article>
+    </article>
   );
 }
