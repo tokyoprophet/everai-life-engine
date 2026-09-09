@@ -11,8 +11,15 @@ import {
 import type { ReactNode } from "react";
 
 import { Reveal } from "@/components/reveal";
-import { estimateMonthlyCost, estimatePerUserApproach } from "@/engine/engine";
+import {
+  estimateMonthlyCost,
+  estimatePerUserApproach,
+  isReleased,
+  releaseHour,
+} from "@/engine/engine";
 import { useToday } from "@/engine/use-today";
+import { useDemoState } from "@/lib/demo-state";
+
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -149,28 +156,41 @@ function IdeaPage() {
         <Reveal delay={0.08}>
           <div className="panel p-5 sm:p-6">
             <p className="text-[11px] uppercase tracking-[0.16em] text-text-3">
-              Live from the engine · day {day} · {payload.userId}
+              Live from the engine · day {day} · {payload.userId} ·{" "}
+              {String(hour).padStart(2, "0")}:00 her time
             </p>
             <div className="mt-4 grid gap-3">
-              {beats.map((beat) => (
-                <article
-                  key={beat.id}
-                  className="rounded-[16px] border border-line bg-surface-2 p-4"
-                >
-                  <div className="flex items-center justify-between gap-3">
-                    <span className="text-xs font-medium text-text">{beat.slot}</span>
-                    <span className="text-xs text-text-3">{beat.mood}</span>
+              {beats.map((beat) =>
+                isReleased(beat.slot, hour) ? (
+                  <article
+                    key={beat.id}
+                    className="rounded-[16px] border border-line bg-surface-2 p-4"
+                  >
+                    <div className="flex items-center justify-between gap-3">
+                      <span className="text-xs font-medium text-text">{beat.slot}</span>
+                      <span className="text-xs text-text-3">{beat.mood}</span>
+                    </div>
+                    <p className="mt-2.5 text-sm leading-relaxed text-text-2">{beat.text}</p>
+                    {beat.openQuestion ? (
+                      <p className="mt-2 text-xs text-text-3">
+                        still deciding: {beat.openQuestion}
+                      </p>
+                    ) : null}
+                  </article>
+                ) : (
+                  <div
+                    key={beat.id}
+                    className="flex items-center gap-3 rounded-[16px] border border-dashed border-line bg-surface-2/50 px-4 py-5 text-sm text-text-3"
+                  >
+                    <Lock className="h-4 w-4 shrink-0" aria-hidden="true" />
+                    {beat.slot === "morning" ? "Morning" : "Evening"} beat unlocks at{" "}
+                    {String(releaseHour[beat.slot]).padStart(2, "0")}:00 her time
                   </div>
-                  <p className="mt-2.5 text-sm leading-relaxed text-text-2">{beat.text}</p>
-                  {beat.openQuestion ? (
-                    <p className="mt-2 text-xs text-text-3">
-                      still deciding: {beat.openQuestion}
-                    </p>
-                  ) : null}
-                </article>
-              ))}
+                ),
+              )}
             </div>
           </div>
+
         </Reveal>
       </section>
 
