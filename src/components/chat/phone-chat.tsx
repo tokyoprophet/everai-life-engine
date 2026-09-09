@@ -69,8 +69,10 @@ function Bubble({
 
 export function PhoneChat({
   onSelectBeat,
+  sessionSignal,
 }: {
   onSelectBeat: (beatId: string | null) => void;
+  sessionSignal: number;
 }) {
   const { day, userId, hour, hydrated, messages, threads, pushMessage, setThread } =
     useDemoState();
@@ -116,15 +118,18 @@ export function PhoneChat({
     speak(answer.messages);
   }
 
+  const lastSession = useRef(sessionSignal);
+  const lastDay = useRef(day);
   useEffect(() => {
-    function handler() {
-      speak(opener(day, userId, hour, threads));
-    }
-    window.addEventListener("life-engine:new-session", handler);
-    return () => window.removeEventListener("life-engine:new-session", handler);
-  });
+    if (!hydrated) return;
+    if (sessionSignal === lastSession.current && day === lastDay.current) return;
+    lastSession.current = sessionSignal;
+    lastDay.current = day;
+    speak(opener(day, userId, hour, threads));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sessionSignal, day, hydrated]);
 
-  let lastDay = -1;
+  let renderedDay = -1;
 
   return (
     <div className="mx-auto w-full max-w-[390px]">
@@ -149,9 +154,9 @@ export function PhoneChat({
           <div ref={listRef} className="flex-1 overflow-y-auto px-4 py-4">
             {messages.map((message, i) => {
               const beat = findBeat(message.sourceBeatId);
-              const beatDay = beat?.day ?? lastDay;
-              const showSeparator = beatDay !== lastDay;
-              if (showSeparator) lastDay = beatDay;
+              const beatDay = beat?.day ?? renderedDay;
+              const showSeparator = beatDay !== renderedDay;
+              if (showSeparator) renderedDay = beatDay;
               const prev = messages[i - 1];
               const grouped =
                 !showSeparator && prev?.role === message.role && message.role === "mia";
