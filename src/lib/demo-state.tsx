@@ -20,6 +20,7 @@ export type DemoMessage = {
   role: "user" | "mia";
   text: string;
   at: number;
+  sourceBeatId: string | null;
 };
 
 export type DemoState = {
@@ -27,6 +28,7 @@ export type DemoState = {
   userId: UserId;
   hour: Hour;
   messages: DemoMessage[];
+  threads: Record<string, string>;
   guideDismissed: boolean;
 };
 
@@ -37,6 +39,7 @@ export type DemoStateValue = DemoState & {
   setDay: (day: number) => void;
   advanceDay: () => Beat[];
   pushMessage: (message: Omit<DemoMessage, "id" | "at">) => void;
+  setThread: (arcId: string, userText: string) => void;
   dismissGuide: () => void;
   reset: () => void;
 };
@@ -48,6 +51,7 @@ const initialState: DemoState = {
   userId: "user-A",
   hour: 9,
   messages: [],
+  threads: {},
   guideDismissed: false,
 };
 
@@ -110,6 +114,11 @@ export function DemoStateProvider({ children }: { children: ReactNode }) {
       ],
     }));
   }, []);
+  const setThread = useCallback(
+    (arcId: string, userText: string) =>
+      setState((s) => ({ ...s, threads: { ...s.threads, [arcId]: userText } })),
+    [],
+  );
   const dismissGuide = useCallback(
     () => setState((s) => ({ ...s, guideDismissed: true })),
     [],
@@ -125,10 +134,11 @@ export function DemoStateProvider({ children }: { children: ReactNode }) {
       setDay,
       advanceDay,
       pushMessage,
+      setThread,
       dismissGuide,
       reset,
     }),
-    [state, hydrated, setUser, setHour, setDay, advanceDay, pushMessage, dismissGuide, reset],
+    [state, hydrated, setUser, setHour, setDay, advanceDay, pushMessage, setThread, dismissGuide, reset],
   );
 
   return <DemoStateContext.Provider value={value}>{children}</DemoStateContext.Provider>;
