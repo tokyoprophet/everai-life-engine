@@ -109,6 +109,8 @@ function money(value: number) {
 
 function IdeaPage() {
   const { day, beats, payload } = useToday();
+  const { hour } = useDemoState();
+
 
   const maxCost = Math.max(lifeEngineCost.total, perUserCost.total);
 
