@@ -143,9 +143,22 @@ export function DemoStateProvider({ children }: { children: ReactNode }) {
       pushMessage,
       setThread,
       dismissGuide,
+      markDayRead,
       reset,
     }),
-    [state, hydrated, setUser, setHour, setDay, advanceDay, pushMessage, setThread, dismissGuide, reset],
+    [
+      state,
+      hydrated,
+      setUser,
+      setHour,
+      setDay,
+      advanceDay,
+      pushMessage,
+      setThread,
+      dismissGuide,
+      markDayRead,
+      reset,
+    ],
   );
 
   return <DemoStateContext.Provider value={value}>{children}</DemoStateContext.Provider>;
