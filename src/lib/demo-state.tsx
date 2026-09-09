@@ -126,6 +126,10 @@ export function DemoStateProvider({ children }: { children: ReactNode }) {
     () => setState((s) => ({ ...s, guideDismissed: true })),
     [],
   );
+  const markDayRead = useCallback(
+    () => setState((s) => (s.dayRead ? s : { ...s, dayRead: true })),
+    [],
+  );
   const reset = useCallback(() => setState(initialState), []);
 
   const value = useMemo<DemoStateValue>(
