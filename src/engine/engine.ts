@@ -60,11 +60,22 @@ function arcStateForDay(arc: Arc, day: number): string {
   return state || arc.summary;
 }
 
+export function arcTensionForDay(arc: Arc, day: number): number {
+  let tension = 0;
+  for (let d = 0; d <= day; d += 1) {
+    const next = arc.tensionByDay[d];
+    if (typeof next === "number") tension = next;
+  }
+  return tension;
+}
+
 export function arcsState(season: Season, day: number) {
   return season.arcs.map((arc) => ({
     id: arc.id,
     title: arc.title,
     state: arcStateForDay(arc, day),
+    tension: arcTensionForDay(arc, day),
+    movedToday: Boolean(arc.stateByDay[day]),
   }));
 }
 
