@@ -29,12 +29,24 @@ export const Route = createFileRoute("/chat")({
 });
 
 function SessionPanel({ onNewSession }: { onNewSession: () => void }) {
-  const { userId, day, hour } = useDemoState();
+  const { userId, day, hour, messages } = useDemoState();
+  const alreadyOpened = hasOpenedToday(messages, day);
   const rows = [
     { icon: User, label: "User", value: userId },
     { icon: PlayCircle, label: "Day", value: `Day ${day}` },
     { icon: Clock, label: "Her time", value: `${String(hour).padStart(2, "0")}:00` },
   ];
+
+  const button = (
+    <button
+      type="button"
+      onClick={onNewSession}
+      disabled={alreadyOpened}
+      className="mt-5 w-full rounded-full bg-accent px-4 py-2.5 text-sm font-medium text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose/40 disabled:cursor-not-allowed disabled:opacity-50"
+    >
+      Open a new session
+    </button>
+  );
 
   return (
     <section className="rounded-[20px] border border-line bg-surface p-5">
@@ -48,13 +60,21 @@ function SessionPanel({ onNewSession }: { onNewSession: () => void }) {
           </div>
         ))}
       </dl>
-      <button
-        type="button"
-        onClick={onNewSession}
-        className="mt-5 w-full rounded-full bg-accent px-4 py-2.5 text-sm font-medium text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose/40"
-      >
-        Open a new session
-      </button>
+      {alreadyOpened ? (
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <span className="block">{button}</span>
+          </TooltipTrigger>
+          <TooltipContent
+            side="top"
+            className="max-w-[240px] border border-line bg-surface-3 text-xs text-text-2"
+          >
+            She already opened today. Advance the day to get a new one.
+          </TooltipContent>
+        </Tooltip>
+      ) : (
+        button
+      )}
       <p className="mt-3 text-xs leading-relaxed text-text-3">
         In production this happens when the user opens the chat. Candy fetches her day and
         pastes it into the prompt.
@@ -62,6 +82,7 @@ function SessionPanel({ onNewSession }: { onNewSession: () => void }) {
     </section>
   );
 }
+
 
 function BehindPanel({ selectedBeatId }: { selectedBeatId: string | null }) {
   const { userId, hour } = useDemoState();
