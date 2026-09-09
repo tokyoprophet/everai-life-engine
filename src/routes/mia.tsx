@@ -3,6 +3,7 @@ import { Clock, Layers, Shuffle, Sunrise } from "lucide-react";
 
 import { BeatCard, LockedBeatCard } from "@/components/beat-card";
 import { DemoDock } from "@/components/demo-dock";
+import { FirstRunGuide } from "@/components/first-run-guide";
 import { PageHeader } from "@/components/page-header";
 import { dateForDay, isReleased, pickForUser } from "@/engine/engine";
 import { season } from "@/engine/season";
@@ -222,6 +223,8 @@ function MiaPage() {
         title="Mia's season, day by day"
         description="Three storylines seeded once from her card, then two beats a day written by the nightly job in Europe/Lisbon."
       />
+
+      <FirstRunGuide />
 
       <ProfileHeader />
 
