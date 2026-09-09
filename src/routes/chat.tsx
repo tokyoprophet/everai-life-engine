@@ -5,9 +5,12 @@ import { Clock, PlayCircle, User } from "lucide-react";
 import { PhoneChat } from "@/components/chat/phone-chat";
 import { DemoDock } from "@/components/demo-dock";
 import { PageHeader } from "@/components/page-header";
-import { findBeat, releasedBeats } from "@/chat/scriptedChat";
+import { findBeat, hasOpenedToday, releasedBeats } from "@/chat/scriptedChat";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { arcTitle } from "@/engine/season";
 import { useToday } from "@/engine/use-today";
 import { useDemoState } from "@/lib/demo-state";
+
 
 export const Route = createFileRoute("/chat")({
   head: () => ({

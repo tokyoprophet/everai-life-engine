@@ -3,6 +3,8 @@ import { Camera, Lock, Mic, Moon, Sun, Video } from "lucide-react";
 
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { releaseHour } from "@/engine/engine";
+import { arcTitle } from "@/engine/season";
+
 import type { Beat, MediaKind, Slot } from "@/engine/types";
 
 const slotIcon = { morning: Sun, evening: Moon };
@@ -121,9 +123,10 @@ export function BeatCard({
         <span className="text-sm font-medium text-text">{beat.slot}</span>
         {beat.arcId ? (
           <span className="rounded-full border border-violet/30 bg-violet/12 px-2.5 py-1 text-[11px] text-violet">
-            {beat.arcId}
+            {arcTitle(beat.arcId)}
           </span>
         ) : null}
+
         <span className="ml-auto text-xs italic text-text-3">{beat.mood}</span>
       </div>
 
