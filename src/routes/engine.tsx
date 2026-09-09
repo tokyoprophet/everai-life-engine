@@ -107,7 +107,7 @@ function Pipeline({
     {
       icon: Shuffle,
       title: "Pick 2 per user",
-      line: "Hash of user id, day and slot",
+      line: "No second call. Same night, different pair.",
       value: `${userId} → m:v${mv}, e:v${ev}`,
       tab: "payload" as TabKey,
     },

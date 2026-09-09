@@ -205,7 +205,8 @@ const DECISIONS: { claim: string; reason: string }[] = [
   },
   {
     claim: "Four candidates, two per user",
-    reason: "Variation between users at no extra generation cost, from a hash of the user id.",
+    reason:
+      "Variation between users from one call: the variants make that call longer, not more numerous. The bill is per character, not per user.",
   },
   {
     claim: "Her day runs in her timezone",
