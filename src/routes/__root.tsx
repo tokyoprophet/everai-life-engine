@@ -134,7 +134,16 @@ function RootComponent() {
             </main>
             <SiteFooter />
           </div>
-          <Toaster position="top-center" />
+          <Toaster
+            position="top-right"
+            theme="dark"
+            toastOptions={{
+              classNames: {
+                toast:
+                  "group toast border border-line bg-surface-2 text-text text-sm rounded-2xl",
+              },
+            }}
+          />
         </TooltipProvider>
       </DemoStateProvider>
     </QueryClientProvider>
