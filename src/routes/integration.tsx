@@ -231,7 +231,7 @@ const DECISIONS: { claim: string; reason: string }[] = [
 
 const MILESTONES: { when: string; what: string }[] = [
   { when: "Day 1", what: "Diagnostics and seed arcs." },
-  { when: "Day 2", what: "Service in shadow, cancel-flow pause offer live." },
+  { when: "Day 2", what: "Service in shadow for the top 50 characters." },
   { when: "Day 3", what: "Integration behind a flag, evals." },
   { when: "Day 4", what: "A/B on 10% of new subscribers, randomised by user." },
   { when: "Days 5 to 7", what: "First 48-hour return read." },
