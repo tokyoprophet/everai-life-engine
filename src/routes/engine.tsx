@@ -24,7 +24,7 @@ import {
   estimatePerUserApproach,
   variantForUser,
 } from "@/engine/engine";
-import { MAX_DAY, season } from "@/engine/season";
+import { arcTitle, MAX_DAY, season } from "@/engine/season";
 import type { Beat } from "@/engine/types";
 import { useToday } from "@/engine/use-today";
 import { useDemoState } from "@/lib/demo-state";
@@ -181,9 +181,10 @@ function CandidateCard({
         <span className="font-mono text-[10px] text-text-3">v{beat.variant}</span>
         {beat.arcId ? (
           <span className="rounded-full border border-violet/30 bg-violet/12 px-2 py-0.5 text-[10px] text-violet">
-            {beat.arcId}
+            {arcTitle(beat.arcId)}
           </span>
         ) : null}
+
         {!picked ? (
           <span className="ml-auto text-[10px] text-text-3">not shown to {userId}</span>
         ) : null}
@@ -374,7 +375,7 @@ function EnginePage() {
   const endpoint = `GET /api/v1/characters/mia/day?user_id=${userId}&day=${day}&hour=${hour}`;
 
   return (
-    <div className="mx-auto max-w-[1280px] px-4 py-16 pb-32 sm:px-6">
+    <div className="mx-auto max-w-[1280px] px-4 py-16 pb-[150px] sm:px-6 sm:pb-[100px]">
       <PageHeader
         eyebrow="Control room"
         title="One job per character per day."

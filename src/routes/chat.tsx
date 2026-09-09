@@ -103,9 +103,10 @@ function BehindPanel({ selectedBeatId }: { selectedBeatId: string | null }) {
             <span className="text-xs text-text-3">{beat.slot}</span>
             {beat.arcId ? (
               <span className="rounded-full border border-violet/30 bg-violet/12 px-2.5 py-0.5 text-[11px] text-violet">
-                {beat.arcId}
+                {arcTitle(beat.arcId)}
               </span>
             ) : null}
+
           </div>
           <p className="mt-3 text-sm leading-relaxed text-text-2">{beat.text}</p>
         </div>
@@ -158,7 +159,7 @@ function ChatPage() {
   const [sessionSignal, setSessionSignal] = useState(0);
 
   return (
-    <div className="mx-auto max-w-[1280px] px-4 py-16 pb-32 sm:px-6">
+    <div className="mx-auto max-w-[1280px] px-4 py-16 pb-[150px] sm:px-6 sm:pb-[100px]">
       <PageHeader
         eyebrow="The chat"
         title="She answers from her day, not from nothing"
