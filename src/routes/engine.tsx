@@ -376,7 +376,7 @@ function EnginePage() {
   const endpoint = `GET /api/v1/characters/mia/day?user_id=${userId}&day=${day}&hour=${hour}`;
 
   return (
-    <div className="mx-auto max-w-[1280px] px-4 py-16 pb-[150px] sm:px-6 sm:pb-[100px]">
+    <div className="mx-auto max-w-[1280px] px-4 py-16 pb-[210px] sm:px-6 sm:pb-[124px]">
       <PageHeader
         eyebrow="Control room"
         title="One job per character per day."
