@@ -11,9 +11,9 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ChatRouteImport } from './routes/chat'
-import { Route as DayRouteImport } from './routes/day'
 import { Route as EngineRouteImport } from './routes/engine'
-import { Route as SeasonRouteImport } from './routes/season'
+import { Route as IntegrationRouteImport } from './routes/integration'
+import { Route as MiaRouteImport } from './routes/mia'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -25,58 +25,58 @@ const ChatRoute = ChatRouteImport.update({
   path: '/chat',
   getParentRoute: () => rootRouteImport,
 } as any)
-const DayRoute = DayRouteImport.update({
-  id: '/day',
-  path: '/day',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const EngineRoute = EngineRouteImport.update({
   id: '/engine',
   path: '/engine',
   getParentRoute: () => rootRouteImport,
 } as any)
-const SeasonRoute = SeasonRouteImport.update({
-  id: '/season',
-  path: '/season',
+const IntegrationRoute = IntegrationRouteImport.update({
+  id: '/integration',
+  path: '/integration',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MiaRoute = MiaRouteImport.update({
+  id: '/mia',
+  path: '/mia',
   getParentRoute: () => rootRouteImport,
 } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/chat': typeof ChatRoute
-  '/day': typeof DayRoute
   '/engine': typeof EngineRoute
-  '/season': typeof SeasonRoute
+  '/integration': typeof IntegrationRoute
+  '/mia': typeof MiaRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/chat': typeof ChatRoute
-  '/day': typeof DayRoute
   '/engine': typeof EngineRoute
-  '/season': typeof SeasonRoute
+  '/integration': typeof IntegrationRoute
+  '/mia': typeof MiaRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/chat': typeof ChatRoute
-  '/day': typeof DayRoute
   '/engine': typeof EngineRoute
-  '/season': typeof SeasonRoute
+  '/integration': typeof IntegrationRoute
+  '/mia': typeof MiaRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/chat' | '/day' | '/engine' | '/season'
+  fullPaths: '/' | '/chat' | '/engine' | '/integration' | '/mia'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/chat' | '/day' | '/engine' | '/season'
-  id: '__root__' | '/' | '/chat' | '/day' | '/engine' | '/season'
+  to: '/' | '/chat' | '/engine' | '/integration' | '/mia'
+  id: '__root__' | '/' | '/chat' | '/engine' | '/integration' | '/mia'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   ChatRoute: typeof ChatRoute
-  DayRoute: typeof DayRoute
   EngineRoute: typeof EngineRoute
-  SeasonRoute: typeof SeasonRoute
+  IntegrationRoute: typeof IntegrationRoute
+  MiaRoute: typeof MiaRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -95,13 +95,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ChatRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/day': {
-      id: '/day'
-      path: '/day'
-      fullPath: '/day'
-      preLoaderRoute: typeof DayRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/engine': {
       id: '/engine'
       path: '/engine'
@@ -109,11 +102,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof EngineRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/season': {
-      id: '/season'
-      path: '/season'
-      fullPath: '/season'
-      preLoaderRoute: typeof SeasonRouteImport
+    '/integration': {
+      id: '/integration'
+      path: '/integration'
+      fullPath: '/integration'
+      preLoaderRoute: typeof IntegrationRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/mia': {
+      id: '/mia'
+      path: '/mia'
+      fullPath: '/mia'
+      preLoaderRoute: typeof MiaRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
@@ -122,9 +122,9 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   ChatRoute: ChatRoute,
-  DayRoute: DayRoute,
   EngineRoute: EngineRoute,
-  SeasonRoute: SeasonRoute,
+  IntegrationRoute: IntegrationRoute,
+  MiaRoute: MiaRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

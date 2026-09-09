@@ -8,32 +8,38 @@
   --radius-lg: 20px;
   --radius-xl: 24px;
 
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
+  /* Life Engine palette */
+  --color-bg: var(--bg);
   --color-surface: var(--surface);
   --color-surface-2: var(--surface-2);
   --color-surface-3: var(--surface-3);
-  --color-card: var(--surface);
-  --color-card-foreground: var(--foreground);
-  --color-popover: var(--surface-2);
-  --color-popover-foreground: var(--foreground);
-  --color-primary: var(--primary);
-  --color-primary-foreground: var(--primary-foreground);
-  --color-secondary: var(--surface-2);
-  --color-secondary-foreground: var(--foreground);
-  --color-muted: var(--surface-2);
-  --color-muted-foreground: var(--muted-foreground);
-  --color-subtle: var(--subtle-foreground);
-  --color-accent: var(--surface-3);
-  --color-accent-foreground: var(--foreground);
+  --color-line: var(--line);
+  --color-text: var(--text);
+  --color-text-2: var(--text-2);
+  --color-text-3: var(--text-3);
   --color-rose: var(--rose);
   --color-violet: var(--violet);
   --color-success: var(--success);
   --color-warning: var(--warning);
   --color-gold: var(--gold);
+
+  /* shadcn bridge tokens */
+  --color-background: var(--bg);
+  --color-foreground: var(--text);
+  --color-card: var(--surface);
+  --color-card-foreground: var(--text);
+  --color-popover: var(--surface-2);
+  --color-popover-foreground: var(--text);
+  --color-primary: var(--rose);
+  --color-primary-foreground: var(--text);
+  --color-secondary: var(--surface-2);
+  --color-secondary-foreground: var(--text);
+  --color-muted: var(--surface-2);
+  --color-muted-foreground: var(--text-2);
+  --color-accent-foreground: var(--text);
   --color-destructive: var(--warning);
-  --color-destructive-foreground: var(--foreground);
-  --color-border: var(--border);
+  --color-destructive-foreground: var(--bg);
+  --color-border: var(--line);
   --color-input: var(--surface-3);
   --color-ring: var(--violet);
 
@@ -42,21 +48,19 @@
 }
 
 :root {
-  --background: oklch(0.145 0.015 285);
-  --foreground: oklch(0.964 0.004 285);
-  --surface: oklch(0.19 0.017 285);
-  --surface-2: oklch(0.222 0.02 285);
-  --surface-3: oklch(0.262 0.024 285);
-  --muted-foreground: oklch(0.775 0.02 288);
-  --subtle-foreground: oklch(0.61 0.026 288);
-  --border: oklch(1 0 0 / 7%);
-  --primary: oklch(0.68 0.23 3);
-  --primary-foreground: oklch(0.99 0 0);
-  --rose: oklch(0.68 0.23 3);
-  --violet: oklch(0.61 0.23 293);
-  --success: oklch(0.79 0.15 163);
-  --warning: oklch(0.82 0.14 70);
-  --gold: oklch(0.82 0.1 85);
+  --bg: #0a0a0f;
+  --surface: #12121b;
+  --surface-2: #171724;
+  --surface-3: #1e1e2d;
+  --line: rgba(255, 255, 255, 0.07);
+  --text: #f1f1f6;
+  --text-2: #b7b7c9;
+  --text-3: #7f7f98;
+  --rose: #ff4f8b;
+  --violet: #8a5cff;
+  --success: #4ad295;
+  --warning: #ffb347;
+  --gold: #e8c26b;
 
   --gradient-accent: linear-gradient(120deg, #ff4f8b 0%, #8a5cff 100%);
   --shadow-soft:
@@ -66,7 +70,7 @@
 
 @layer base {
   * {
-    border-color: var(--color-border);
+    border-color: var(--line);
   }
 
   html {
@@ -74,16 +78,19 @@
   }
 
   body {
-    background-color: var(--color-background);
-    color: var(--color-foreground);
+    background-color: var(--bg);
+    color: var(--text);
     font-family: var(--font-sans);
-    font-feature-settings: "tnum" 1, "cv05" 1;
+    font-feature-settings: "tnum" 1;
+    font-variant-numeric: tabular-nums;
   }
 
   h1,
-  h2,
-  h3 {
-    font-variant-numeric: tabular-nums;
+  h2 {
+    font-family: var(--font-display);
+    font-variation-settings: "opsz" 96, "SOFT" 20;
+    font-weight: 500;
+    letter-spacing: -0.015em;
   }
 }
 
@@ -94,22 +101,22 @@
   letter-spacing: -0.015em;
 }
 
-@utility panel {
-  background-color: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 20px;
-  box-shadow: var(--shadow-soft);
+@utility bg-accent {
+  background-image: var(--gradient-accent);
 }
 
-@utility accent-text {
-  background: var(--gradient-accent);
+@utility text-accent {
+  background-image: var(--gradient-accent);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
 }
 
-@utility accent-bg {
-  background: var(--gradient-accent);
+@utility panel {
+  background-color: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  box-shadow: var(--shadow-soft);
 }
 
 @utility accent-ring {

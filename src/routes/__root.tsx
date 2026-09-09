@@ -11,7 +11,8 @@ import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
-import { EngineProvider } from "../lib/engine-context";
+import { DemoStateProvider } from "../lib/demo-state";
+import { TooltipProvider } from "../components/ui/tooltip";
 import { SiteFooter, SiteNav } from "../components/site-nav";
 
 function NotFoundComponent() {
@@ -123,16 +124,18 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <EngineProvider>
-        <div className="flex min-h-screen flex-col">
-          <SiteNav />
-          <main className="flex-1 pb-16">
-            {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
-            <Outlet />
-          </main>
-          <SiteFooter />
-        </div>
-      </EngineProvider>
+      <DemoStateProvider>
+        <TooltipProvider delayDuration={150}>
+          <div className="flex min-h-screen flex-col">
+            <SiteNav />
+            <main className="flex-1">
+              {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
+              <Outlet />
+            </main>
+            <SiteFooter />
+          </div>
+        </TooltipProvider>
+      </DemoStateProvider>
     </QueryClientProvider>
   );
 }
