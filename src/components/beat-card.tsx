@@ -28,7 +28,7 @@ function Waveform() {
           key={i}
           className="w-[3px] rounded-full bg-violet/70"
           style={{ height: `${h * 36}px` }}
-          animate={reduced ? undefined : { scaleY: [1, 0.45, 1] }}
+          animate={reduced ? { scaleY: 1 } : { scaleY: [1, 0.45, 1] }}
           transition={{
             duration: 1.2,
             repeat: Infinity,
