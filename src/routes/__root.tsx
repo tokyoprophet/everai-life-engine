@@ -135,8 +135,10 @@ function RootComponent() {
             <SiteFooter />
           </div>
           <Toaster
-            position="top-right"
+            position="bottom-right"
             theme="dark"
+            duration={2500}
+            visibleToasts={1}
             toastOptions={{
               classNames: {
                 toast:
@@ -144,6 +146,7 @@ function RootComponent() {
               },
             }}
           />
+
         </TooltipProvider>
       </DemoStateProvider>
     </QueryClientProvider>
