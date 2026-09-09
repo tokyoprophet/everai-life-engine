@@ -383,7 +383,8 @@ function IntegrationPage() {
           ))}
           <p className="mt-4 text-sm leading-relaxed text-text-2">
             Baseline renewal 50%, detect 5 points at alpha 0.05 and power 0.8: about 1,600
-            subscribers per arm. The wait is the month, not the sample.
+            subscribers per arm. Candy reaches that in a day; the wait is the calendar month
+            behind the metric, not the sample.
           </p>
         </div>
       </Section>
