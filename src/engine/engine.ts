@@ -54,7 +54,8 @@ export const usageHint =
 function arcStateForDay(arc: Arc, day: number): string {
   let state = "";
   for (let d = 0; d <= day; d += 1) {
-    if (arc.stateByDay[d]) state = arc.stateByDay[d];
+    const next = arc.stateByDay[d];
+    if (next) state = next;
   }
   return state || arc.summary;
 }
