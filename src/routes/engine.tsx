@@ -48,7 +48,7 @@ export const Route = createFileRoute("/engine")({
   component: EnginePage,
 });
 
-type TabKey = "candidates" | "payload" | "prompt" | "cost";
+type TabKey = "payload" | "prompt" | "cost";
 
 function CopyButton({ text }: { text: string }) {
   const [copied, setCopied] = useState(false);
