@@ -152,8 +152,8 @@ export function hash(userId: string, day: number, slot: Slot): number {
 }
 
 export function pickBeat(userId: string, day: number, slot: Slot): Beat {
-  const pool = candidates[day][slot];
-  return pool[hash(userId, day, slot) % pool.length];
+  const pool = candidates[day]![slot];
+  return pool[hash(userId, day, slot) % pool.length]!;
 }
 
 export function storylineOf(id: StorylineId): Storyline {
