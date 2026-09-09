@@ -22,7 +22,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   estimateMonthlyCost,
   estimatePerUserApproach,
-  isReleased,
   variantForUser,
 } from "@/engine/engine";
 import { MAX_DAY, season } from "@/engine/season";
