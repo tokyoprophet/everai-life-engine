@@ -341,7 +341,12 @@ function IntegrationPage() {
             ))}
           </div>
         </div>
+        <p className="mt-4 text-sm leading-relaxed text-text-2">
+          With 52 million users the sample is never the wait. Only the calendar month behind
+          the metric is.
+        </p>
       </Section>
+
 
       <Section title="Measurement">
         <div className="rounded-[20px] border border-line bg-surface p-5">
