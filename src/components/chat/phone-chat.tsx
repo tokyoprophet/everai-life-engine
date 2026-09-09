@@ -7,8 +7,10 @@ import {
   day0EveningBeatId,
   findBeat,
   opener,
+  reOpener,
   reply,
 } from "@/chat/scriptedChat";
+
 import { useDemoState, type DemoMessage } from "@/lib/demo-state";
 
 const QUICK_REPLIES = [
@@ -160,7 +162,7 @@ export function PhoneChat({
             </span>
           </header>
 
-          <div ref={listRef} className="flex-1 overflow-y-auto px-4 py-4">
+          <div ref={listRef} className="no-scrollbar flex-1 overflow-y-auto px-4 py-4">
             {messages.map((message, i) => {
               const beat = findBeat(message.sourceBeatId);
               const beatDay = beat?.day ?? renderedDay;
@@ -190,7 +192,7 @@ export function PhoneChat({
           </div>
 
           <div className="border-t border-line px-3 pb-3 pt-3">
-            <div className="flex gap-2 overflow-x-auto pb-2">
+            <div className="no-scrollbar flex gap-2 overflow-x-auto pb-2">
               {QUICK_REPLIES.map((chip) => (
                 <button
                   key={chip}
