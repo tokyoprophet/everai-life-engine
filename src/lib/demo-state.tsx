@@ -42,6 +42,7 @@ export type DemoStateValue = DemoState & {
   pushMessage: (message: Omit<DemoMessage, "id" | "at">) => void;
   setThread: (arcId: string, userText: string) => void;
   dismissGuide: () => void;
+  markDayRead: () => void;
   reset: () => void;
 };
 
