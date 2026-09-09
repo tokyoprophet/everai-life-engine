@@ -88,8 +88,15 @@ export function DemoStateProvider({ children }: { children: ReactNode }) {
     (day: number) => setState((s) => ({ ...s, day: Math.max(1, day) })),
     [],
   );
-  // Stub: advancing the day will later re-seed beats from the season.
-  const advanceDay = useCallback(() => setState((s) => ({ ...s, day: s.day + 1 })), []);
+  const advanceDay = useCallback(() => {
+    let picked: Beat[] = [];
+    setState((s) => {
+      const day = Math.min(MAX_DAY, s.day + 1);
+      picked = pickForUser(season.days[day] ?? [], s.userId, day);
+      return { ...s, day };
+    });
+    return picked;
+  }, []);
   const pushMessage = useCallback((message: Omit<DemoMessage, "id" | "at">) => {
     setState((s) => ({
       ...s,
