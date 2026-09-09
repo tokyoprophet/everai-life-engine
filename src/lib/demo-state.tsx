@@ -55,6 +55,7 @@ const initialState: DemoState = {
   messages: [],
   threads: {},
   guideDismissed: false,
+  dayRead: false,
 };
 
 const DemoStateContext = createContext<DemoStateValue | null>(null);
