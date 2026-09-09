@@ -11,6 +11,7 @@ import {
 import { pickForUser } from "@/engine/engine";
 import { MAX_DAY, season } from "@/engine/season";
 import type { Beat } from "@/engine/types";
+import { fetchLiveDay, type LiveDay } from "@/lib/live-engine";
 
 export type UserId = "user-A" | "user-B";
 export type Hour = 9 | 21;
@@ -21,26 +22,36 @@ export type DemoMessage = {
   text: string;
   at: number;
   sourceBeatId: string | null;
+  quotesUser?: boolean;
 };
+
+/** What the user actually said about a storyline, kept in the conversation only. */
+export type Stance = { text: string; day: number };
+
+export type EngineMode = "scripted" | "live";
 
 export type DemoState = {
   day: number;
   userId: UserId;
   hour: Hour;
   messages: DemoMessage[];
-  threads: Record<string, string>;
+  stances: Record<string, Stance>;
   guideDismissed: boolean;
   dayRead: boolean;
+  engineMode: EngineMode;
 };
 
 export type DemoStateValue = DemoState & {
   hydrated: boolean;
+  liveActive: boolean;
+  live: LiveDay | null;
   setUser: (userId: UserId) => void;
   setHour: (hour: Hour) => void;
   setDay: (day: number) => void;
+  setEngineMode: (mode: EngineMode) => void;
   advanceDay: () => Beat[];
   pushMessage: (message: Omit<DemoMessage, "id" | "at">) => void;
-  setThread: (arcId: string, userText: string) => void;
+  setStance: (arcId: string, userText: string, day: number) => void;
   dismissGuide: () => void;
   markDayRead: () => void;
   reset: () => void;
@@ -53,9 +64,10 @@ const initialState: DemoState = {
   userId: "user-A",
   hour: 9,
   messages: [],
-  threads: {},
+  stances: {},
   guideDismissed: false,
   dayRead: false,
+  engineMode: "scripted",
 };
 
 const DemoStateContext = createContext<DemoStateValue | null>(null);
@@ -117,9 +129,13 @@ export function DemoStateProvider({ children }: { children: ReactNode }) {
       ],
     }));
   }, []);
-  const setThread = useCallback(
-    (arcId: string, userText: string) =>
-      setState((s) => ({ ...s, threads: { ...s.threads, [arcId]: userText } })),
+  const setStance = useCallback(
+    (arcId: string, userText: string, day: number) =>
+      setState((s) => ({ ...s, stances: { ...s.stances, [arcId]: { text: userText, day } } })),
+    [],
+  );
+  const setEngineMode = useCallback(
+    (engineMode: EngineMode) => setState((s) => ({ ...s, engineMode })),
     [],
   );
   const dismissGuide = useCallback(
@@ -132,16 +148,36 @@ export function DemoStateProvider({ children }: { children: ReactNode }) {
   );
   const reset = useCallback(() => setState(initialState), []);
 
+  const [live, setLive] = useState<LiveDay | null>(null);
+
+  useEffect(() => {
+    if (!hydrated) return;
+    if (state.engineMode !== "live") {
+      setLive(null);
+      return;
+    }
+    let cancelled = false;
+    void fetchLiveDay(state.userId, state.day, state.hour).then((result) => {
+      if (!cancelled) setLive(result);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [hydrated, state.engineMode, state.userId, state.day, state.hour]);
+
   const value = useMemo<DemoStateValue>(
     () => ({
       ...state,
       hydrated,
+      live,
+      liveActive: state.engineMode === "live" && live !== null,
       setUser,
       setHour,
       setDay,
+      setEngineMode,
       advanceDay,
       pushMessage,
-      setThread,
+      setStance,
       dismissGuide,
       markDayRead,
       reset,
@@ -149,12 +185,14 @@ export function DemoStateProvider({ children }: { children: ReactNode }) {
     [
       state,
       hydrated,
+      live,
       setUser,
       setHour,
       setDay,
+      setEngineMode,
       advanceDay,
       pushMessage,
-      setThread,
+      setStance,
       dismissGuide,
       markDayRead,
       reset,

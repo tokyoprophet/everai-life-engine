@@ -9,6 +9,7 @@ import {
   opener,
   reOpener,
   reply,
+  type ScriptedMessage,
 } from "@/chat/scriptedChat";
 
 import { useDemoState, type DemoMessage } from "@/lib/demo-state";
@@ -42,7 +43,7 @@ function Bubble({
 }: {
   message: DemoMessage;
   grouped: boolean;
-  onSelect: (beatId: string | null) => void;
+  onSelect: (beatId: string | null, quotesUser: boolean) => void;
 }) {
   const mine = message.role === "user";
   return (
@@ -54,9 +55,11 @@ function Bubble({
     >
       <button
         type="button"
-        onMouseEnter={() => !mine && onSelect(message.sourceBeatId)}
-        onFocus={() => !mine && onSelect(message.sourceBeatId)}
-        onClick={() => !mine && onSelect(message.sourceBeatId)}
+        onMouseEnter={() =>
+          !mine && onSelect(message.sourceBeatId, Boolean(message.quotesUser))
+        }
+        onFocus={() => !mine && onSelect(message.sourceBeatId, Boolean(message.quotesUser))}
+        onClick={() => !mine && onSelect(message.sourceBeatId, Boolean(message.quotesUser))}
         className={`max-w-[78%] rounded-[18px] px-4 py-2.5 text-left text-[15px] leading-snug ${
           mine
             ? "rounded-br-[6px] bg-accent text-white"
@@ -73,10 +76,10 @@ export function PhoneChat({
   onSelectBeat,
   sessionSignal,
 }: {
-  onSelectBeat: (beatId: string | null) => void;
+  onSelectBeat: (beatId: string | null, quotesUser: boolean) => void;
   sessionSignal: number;
 }) {
-  const { day, userId, hour, hydrated, messages, threads, pushMessage, setThread } =
+  const { day, userId, hour, hydrated, messages, stances, pushMessage, setStance } =
     useDemoState();
   const [typing, setTyping] = useState(false);
   const [draft, setDraft] = useState("");
@@ -99,13 +102,18 @@ export function PhoneChat({
     listRef.current?.scrollTo({ top: listRef.current.scrollHeight, behavior: "smooth" });
   }, [messages.length, typing]);
 
-  function speak(lines: { text: string; sourceBeatId: string | null }[]) {
+  function speak(lines: ScriptedMessage[]) {
     setTyping(true);
     const delay = 600 + Math.floor(Math.random() * 600);
     window.setTimeout(() => {
       setTyping(false);
       lines.forEach((line) =>
-        pushMessage({ role: "mia", text: line.text, sourceBeatId: line.sourceBeatId }),
+        pushMessage({
+          role: "mia",
+          text: line.text,
+          sourceBeatId: line.sourceBeatId,
+          quotesUser: Boolean(line.quotesUser),
+        }),
       );
     }, delay);
   }
@@ -116,7 +124,7 @@ export function PhoneChat({
     setDraft("");
     pushMessage({ role: "user", text: clean, sourceBeatId: null });
     const answer = reply(clean, day, userId, hour, messages.length);
-    if (answer.arcId) setThread(answer.arcId, clean);
+    if (answer.arcId) setStance(answer.arcId, clean, day);
     speak(answer.messages);
   }
 
@@ -134,7 +142,7 @@ export function PhoneChat({
         .filter((id): id is string => Boolean(id));
       speak(reOpener(day, userId, hour, used));
     } else {
-      speak(opener(day, userId, hour, threads));
+      speak(opener(day, userId, hour, stances));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sessionSignal, day, hydrated]);

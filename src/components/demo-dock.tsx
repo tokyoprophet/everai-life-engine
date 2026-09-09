@@ -1,4 +1,4 @@
-import { Clock, Play, RotateCcw } from "lucide-react";
+import { Clock, MoreHorizontal, Play, RotateCcw } from "lucide-react";
 import { useState, type ReactNode } from "react";
 import { toast } from "sonner";
 
@@ -12,9 +12,16 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuLabel,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { MAX_DAY } from "@/engine/season";
-import { useDemoState, type Hour, type UserId } from "@/lib/demo-state";
+import { useDemoState, type EngineMode, type Hour, type UserId } from "@/lib/demo-state";
+import { liveTick } from "@/lib/live-engine";
 import { cn } from "@/lib/utils";
 
 function Hint({ label, children }: { label: string; children: ReactNode }) {
@@ -35,18 +42,32 @@ const segment =
   "whitespace-nowrap rounded-full px-3 py-1.5 text-xs font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet";
 
 export function DemoDock() {
-  const { day, userId, hour, hydrated, setUser, setHour, advanceDay, reset } = useDemoState();
+  const {
+    day,
+    userId,
+    hour,
+    hydrated,
+    engineMode,
+    setEngineMode,
+    setUser,
+    setHour,
+    advanceDay,
+    reset,
+  } = useDemoState();
   const [confirmOpen, setConfirmOpen] = useState(false);
 
   const users: UserId[] = ["user-A", "user-B"];
   const hours: Hour[] = [9, 21];
+  const modes: EngineMode[] = ["scripted", "live"];
   const atSeasonEnd = hydrated && day >= MAX_DAY;
 
   function onAdvance() {
+    if (engineMode === "live") void liveTick("mia");
     advanceDay();
     const next = Math.min(MAX_DAY, day + 1);
     toast(`Day ${next} written once for every user`);
   }
+
 
   return (
     <div className="pointer-events-none fixed inset-x-0 bottom-0 z-50 flex justify-center px-3 pb-4">
@@ -139,6 +160,50 @@ export function DemoDock() {
             Reset
           </button>
         </Hint>
+
+        <DropdownMenu>
+          <DropdownMenuTrigger
+            aria-label="More demo options"
+            className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-line bg-surface text-text-3 transition-colors hover:text-text focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet"
+          >
+            <MoreHorizontal className="h-4 w-4" aria-hidden="true" />
+          </DropdownMenuTrigger>
+          <DropdownMenuContent
+            side="top"
+            align="end"
+            className="w-60 border-line bg-surface-2 text-text"
+          >
+            <DropdownMenuLabel className="text-xs font-normal text-text-3">
+              Engine
+            </DropdownMenuLabel>
+            <div
+              role="radiogroup"
+              aria-label="Engine mode"
+              className="m-1 flex items-center gap-1 rounded-full border border-line bg-surface p-1"
+            >
+              {modes.map((mode) => (
+                <button
+                  key={mode}
+                  type="button"
+                  role="radio"
+                  aria-checked={engineMode === mode}
+                  onClick={() => setEngineMode(mode)}
+                  className={cn(
+                    segment,
+                    "flex-1",
+                    engineMode === mode ? "bg-accent text-white" : "text-text-3 hover:text-text",
+                  )}
+                >
+                  {mode}
+                </button>
+              ))}
+            </div>
+            <p className="px-2 pb-2 pt-1 text-[11px] leading-relaxed text-text-3">
+              Live calls the deployed service to write the day. If it is unreachable the demo
+              falls back to scripted.
+            </p>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
 
       <AlertDialog open={confirmOpen} onOpenChange={setConfirmOpen}>

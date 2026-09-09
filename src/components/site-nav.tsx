@@ -2,6 +2,7 @@ import { Link } from "@tanstack/react-router";
 import { Menu } from "lucide-react";
 import { useState } from "react";
 
+import { LiveBadge } from "@/components/live-badge";
 import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 
 const links = [
@@ -41,7 +42,11 @@ export function SiteNav() {
   return (
     <header className="sticky top-0 z-40 border-b border-line bg-bg/70 backdrop-blur-xl">
       <div className="mx-auto flex h-16 max-w-[1280px] items-center justify-between gap-4 px-4 sm:px-6">
-        <Wordmark />
+        <div className="flex min-w-0 items-center gap-3">
+          <Wordmark />
+          <LiveBadge />
+        </div>
+
 
         <nav aria-label="Main" className="hidden items-center gap-1 md:flex">
           {links.map((link) => (

@@ -1,10 +1,13 @@
 import { hash32, isReleased, pickForUser } from "@/engine/engine";
 import { season } from "@/engine/season";
 import type { Beat } from "@/engine/types";
+import type { Stance } from "@/lib/demo-state";
 
 export type ScriptedMessage = {
   text: string;
   sourceBeatId: string | null;
+  /** True when this line quotes something the user actually said in this thread. */
+  quotesUser?: boolean;
 };
 
 export const DAY0_OPENER =
@@ -48,12 +51,30 @@ function clip(text: string, max = 80): string {
   return text.length <= max ? text : `${text.slice(0, max - 1).trimEnd()}…`;
 }
 
+/**
+ * The "you said" line, built from what the user actually typed about this
+ * storyline. Returns null when there is no stance, so nothing is ever invented.
+ */
+function stanceLine(arcId: string | null, stance: Stance | undefined): string | null {
+  if (!arcId || !stance) return null;
+  const lower = stance.text.toLowerCase();
+  if (arcId === "duarte") {
+    if (lower.includes("send") || lower.includes("late fee")) {
+      return `you said: '${clip(stance.text)}'. so.`;
+    }
+    if (lower.includes("friday") || lower.includes("wait") || lower.includes("call")) {
+      return "you said give him till friday. i lasted two days.";
+    }
+  }
+  return `you said: '${clip(stance.text)}'. been thinking about it.`;
+}
+
 /** She speaks first: 1 to 3 short bubbles built from the newest released beat. */
 export function opener(
   day: number,
   userId: string,
   hour: number,
-  threads: Record<string, string>,
+  stances: Record<string, Stance>,
 ): ScriptedMessage[] {
   const beat = newestReleased(day, userId, hour);
   if (!beat) {
@@ -66,12 +87,9 @@ export function opener(
   }
 
   const messages: ScriptedMessage[] = [];
-  const advice = beat.arcId ? threads[beat.arcId] : undefined;
-  if (advice) {
-    messages.push({
-      text: `you said: '${clip(advice)}'. so.`,
-      sourceBeatId: beat.id,
-    });
+  const line = stanceLine(beat.arcId, beat.arcId ? stances[beat.arcId] : undefined);
+  if (line) {
+    messages.push({ text: line, sourceBeatId: beat.id, quotesUser: true });
   }
   messages.push({ text: beat.text, sourceBeatId: beat.id });
   if (beat.openQuestion) {
