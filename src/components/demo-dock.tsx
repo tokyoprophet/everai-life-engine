@@ -1,6 +1,17 @@
 import { Clock, Play, RotateCcw } from "lucide-react";
-import type { ReactNode } from "react";
+import { useState, type ReactNode } from "react";
+import { toast } from "sonner";
 
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { MAX_DAY } from "@/engine/season";
 import { useDemoState, type Hour, type UserId } from "@/lib/demo-state";
@@ -25,10 +36,17 @@ const segment =
 
 export function DemoDock() {
   const { day, userId, hour, hydrated, setUser, setHour, advanceDay, reset } = useDemoState();
+  const [confirmOpen, setConfirmOpen] = useState(false);
 
   const users: UserId[] = ["user-A", "user-B"];
   const hours: Hour[] = [9, 21];
   const atSeasonEnd = hydrated && day >= MAX_DAY;
+
+  function onAdvance() {
+    advanceDay();
+    const next = Math.min(MAX_DAY, day + 1);
+    toast(`Day ${next} written once for every user`);
+  }
 
   return (
     <div className="pointer-events-none fixed inset-x-0 bottom-0 z-50 flex justify-center px-3 pb-4">
@@ -102,7 +120,7 @@ export function DemoDock() {
         >
           <button
             type="button"
-            onClick={() => advanceDay()}
+            onClick={onAdvance}
             disabled={atSeasonEnd}
             className="inline-flex items-center gap-1.5 whitespace-nowrap rounded-full bg-accent px-4 py-2 text-xs font-semibold text-white accent-ring transition-transform hover:-translate-y-px focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet focus-visible:ring-offset-2 focus-visible:ring-offset-bg disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:translate-y-0"
           >
@@ -114,7 +132,7 @@ export function DemoDock() {
         <Hint label="Clears the demo back to day 1, user-A, morning. Nothing leaves your browser.">
           <button
             type="button"
-            onClick={reset}
+            onClick={() => setConfirmOpen(true)}
             className="inline-flex items-center gap-1.5 rounded-full px-3 py-2 text-xs font-medium text-text-3 transition-colors hover:text-text focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet"
           >
             <RotateCcw className="h-3.5 w-3.5" aria-hidden="true" />
@@ -122,6 +140,32 @@ export function DemoDock() {
           </button>
         </Hint>
       </div>
+
+      <AlertDialog open={confirmOpen} onOpenChange={setConfirmOpen}>
+        <AlertDialogContent className="border-line bg-surface-2 text-text">
+          <AlertDialogHeader>
+            <AlertDialogTitle className="font-display">Reset the demo?</AlertDialogTitle>
+            <AlertDialogDescription className="text-text-2">
+              This clears the day, the user, the clock and the whole chat back to day 1. Nothing
+              leaves your browser.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel className="border-line bg-surface text-text-2">
+              Keep going
+            </AlertDialogCancel>
+            <AlertDialogAction
+              className="bg-accent text-white"
+              onClick={() => {
+                reset();
+                toast("Demo reset to day 1, user-A, morning");
+              }}
+            >
+              Reset
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }
