@@ -178,7 +178,7 @@ function ChatPage() {
   const [sessionSignal, setSessionSignal] = useState(0);
 
   return (
-    <div className="mx-auto max-w-[1280px] px-4 py-16 pb-[210px] sm:px-6 sm:pb-[124px]">
+    <div className="mx-auto max-w-[1280px] px-4 py-16 pb-[210px] sm:px-6 sm:pb-[160px]">
       <PageHeader
         eyebrow="The chat"
         title="She answers from her day, not from nothing"
