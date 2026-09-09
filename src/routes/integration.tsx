@@ -83,6 +83,7 @@ function SequenceDiagram() {
                 <div className="col-span-4">
                   <svg
                     viewBox="0 0 400 34"
+                    preserveAspectRatio="none"
                     className="h-9 w-full"
                     role="img"
                     aria-label={`Step ${i + 1}: from ${LANES[step.from]} to ${LANES[step.to]}, ${step.label}`}
