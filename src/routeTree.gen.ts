@@ -10,11 +10,23 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as DayRouteImport } from './routes/day'
+import { Route as EngineRouteImport } from './routes/engine'
 import { Route as SeasonRouteImport } from './routes/season'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DayRoute = DayRouteImport.update({
+  id: '/day',
+  path: '/day',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EngineRoute = EngineRouteImport.update({
+  id: '/engine',
+  path: '/engine',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SeasonRoute = SeasonRouteImport.update({
@@ -25,27 +37,35 @@ const SeasonRoute = SeasonRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/day': typeof DayRoute
+  '/engine': typeof EngineRoute
   '/season': typeof SeasonRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/day': typeof DayRoute
+  '/engine': typeof EngineRoute
   '/season': typeof SeasonRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/day': typeof DayRoute
+  '/engine': typeof EngineRoute
   '/season': typeof SeasonRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/season'
+  fullPaths: '/' | '/day' | '/engine' | '/season'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/season'
-  id: '__root__' | '/' | '/season'
+  to: '/' | '/day' | '/engine' | '/season'
+  id: '__root__' | '/' | '/day' | '/engine' | '/season'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  DayRoute: typeof DayRoute
+  EngineRoute: typeof EngineRoute
   SeasonRoute: typeof SeasonRoute
 }
 
@@ -56,6 +76,20 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/day': {
+      id: '/day'
+      path: '/day'
+      fullPath: '/day'
+      preLoaderRoute: typeof DayRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/engine': {
+      id: '/engine'
+      path: '/engine'
+      fullPath: '/engine'
+      preLoaderRoute: typeof EngineRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/season': {
@@ -70,6 +104,8 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  DayRoute: DayRoute,
+  EngineRoute: EngineRoute,
   SeasonRoute: SeasonRoute,
 }
 export const routeTree = rootRouteImport
