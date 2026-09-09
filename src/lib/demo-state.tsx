@@ -8,6 +8,10 @@ import {
   type ReactNode,
 } from "react";
 
+import { pickForUser } from "@/engine/engine";
+import { MAX_DAY, season } from "@/engine/season";
+import type { Beat } from "@/engine/types";
+
 export type UserId = "user-A" | "user-B";
 export type Hour = 9 | 21;
 
@@ -31,7 +35,7 @@ export type DemoStateValue = DemoState & {
   setUser: (userId: UserId) => void;
   setHour: (hour: Hour) => void;
   setDay: (day: number) => void;
-  advanceDay: () => void;
+  advanceDay: () => Beat[];
   pushMessage: (message: Omit<DemoMessage, "id" | "at">) => void;
   dismissGuide: () => void;
   reset: () => void;
